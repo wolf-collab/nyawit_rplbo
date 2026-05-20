@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.RegisterController">
+
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 40; -fx-background-color: #f4f4f4;">
+            <VBox alignment="CENTER" prefWidth="350" maxWidth="350" spacing="15" style="-fx-background-color: #43b596; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);">
+
+                <Label style="-fx-font-weight: bold; -fx-font-size: 20;" text="REGISTRASI AKUN" textFill="WHITE" />
+                <Label text="Silakan isi data untuk mendaftar" textFill="WHITE" style="-fx-font-size: 12; -fx-padding: 0 0 10 0;"/>
+
+                <TextField fx:id="regUsernameField" promptText="Buat Username" style="-fx-background-radius: 5; -fx-padding: 10;" />
+                <PasswordField fx:id="regPasswordField" promptText="Buat Password" style="-fx-background-radius: 5; -fx-padding: 10;" />
+                <PasswordField fx:id="regConfirmPasswordField" promptText="Konfirmasi Password" style="-fx-background-radius: 5; -fx-padding: 10;" />
+
+                <Button maxWidth="Infinity" onAction="#handleRegister" style="-fx-background-color: #2b7a63; -fx-text-fill: WHITE; -fx-background-radius: 5; -fx-padding: 10; -fx-font-weight: bold;" text="DAFTAR SEKARANG" />
+
+                <HBox alignment="CENTER" spacing="5">
+                    <Label text="Sudah punya akun?" textFill="WHITE"/>
+                    <Hyperlink text="KEMBALI KE LOGIN" textFill="WHITE" style="-fx-font-weight: bold; -fx-underline: true;" onAction="#goToLogin"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
