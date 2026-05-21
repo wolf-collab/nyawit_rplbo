@@ -1,18 +1,21 @@
 package com.rplbo.app.manajemen_perpustakaan;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
-    private static final String URL = "jdbc:sqlite:perpustakaan.db";
 
     public static Connection connect() {
-        Connection conn = null;
         try {
-            conn = DriverManager.getConnection(URL);
-        } catch (SQLException e) {
-            System.out.println("Gagal koneksi ke SQLite: " + e.getMessage());
+            Class.forName("org.sqlite.JDBC");
+            return DriverManager.getConnection("jdbc:sqlite:perpustakaan.db");
+        } catch (Exception e) {
+            System.out.println("Koneksi gagal: " + e.getMessage());
+            return null;
         }
-        return conn;
     }
 
     public static void initializeDB() {
@@ -46,28 +49,13 @@ public class Database {
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
-            // 1. Eksekusi pembuatan tabel
             stmt.execute(sqlUsers);
             stmt.execute(sqlBooks);
             stmt.execute(sqlLoans);
 
-            // 2. Insert dummy users (pakai INSERT OR IGNORE supaya tidak error kalau sudah ada)
+            // Insert dummy users
             stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');");
             stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('user', 'user123', 'user');");
-
-            // 3. Masukkan 3 buku dummy ke tabel books jika tabelnya masih kosong
-            ResultSet rsBooks = stmt.executeQuery("SELECT COUNT(*) FROM books");
-            if (rsBooks.next() && rsBooks.getInt(1) == 0) {
-                stmt.execute("INSERT INTO books (title, author) VALUES ('Pemrograman Java', 'Budi Raharjo')");
-                stmt.execute("INSERT INTO books (title, author) VALUES ('Belajar UI/UX', 'Siska')");
-                stmt.execute("INSERT INTO books (title, author) VALUES ('Database SQLite', 'Andi')");
-            }
-
-            // 4. Masukkan 1 peminjaman dummy ke tabel loans jika tabelnya masih kosong
-            ResultSet rsLoans = stmt.executeQuery("SELECT COUNT(*) FROM loans");
-            if (rsLoans.next() && rsLoans.getInt(1) == 0) {
-                stmt.execute("INSERT INTO loans (username, book_id) VALUES ('user', 1)");
-            }
 
             System.out.println("Database dan tabel berhasil diinisialisasi.");
 
