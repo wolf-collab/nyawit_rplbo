@@ -28,7 +28,7 @@ public class PeminjamanController {
         String noHp = txtNoHp.getText().trim();
         String judul = txtJudulBuku.getText().trim();
 
-        // Validasi jika ada form yang belum diisi
+
         if (nama.isEmpty() || nik.isEmpty() || noHp.isEmpty() || judul.isEmpty() || dpPinjam.getValue() == null || dpKembali.getValue() == null) {
             showMsg("Peringatan", "Semua kolom bertanda * wajib diisi!");
             return;
@@ -38,7 +38,6 @@ public class PeminjamanController {
         String tglPinjam = dpPinjam.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String tglKembali = dpKembali.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        // Query SQL menyimpan data ke tabel peminjaman
         String sql = "INSERT INTO peminjaman(nama, nik, no_hp, judul_buku, tgl_pinjam, tgl_kembali) VALUES(?,?,?,?,?,?)";
 
         try (Connection conn = Database.connect();
@@ -62,7 +61,6 @@ public class PeminjamanController {
 
     @FXML
     void handleBatal(ActionEvent event) {
-        // Mengosongkan form inputan kembali semula
         txtNama.clear();
         txtNik.clear();
         txtNoHp.clear();
