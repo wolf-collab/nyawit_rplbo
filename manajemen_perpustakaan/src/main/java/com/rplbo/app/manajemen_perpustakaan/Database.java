@@ -26,11 +26,24 @@ public class Database {
                 + " role TEXT NOT NULL\n"
                 + ");";
 
+        String sqlPeminjaman = "CREATE TABLE IF NOT EXISTS peminjaman (\n"
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                + " nama TEXT NOT NULL,\n"
+                + " nik TEXT NOT NULL,\n"
+                + " no_hp TEXT NOT NULL,\n"
+                + " judul_buku TEXT NOT NULL,\n"
+                + " tgl_pinjam TEXT NOT NULL,\n"
+                + " tgl_kembali TEXT NOT NULL\n"
+                + ");";
+
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
             stmt.execute(sql);
             System.out.println("Tabel users berhasil disiapkan.");
+
+            stmt.execute(sqlPeminjaman);
+            System.out.println("Tabel peminjaman berhasil disiapkan.");
 
             String insertAdmin = "INSERT OR IGNORE INTO users (username, password, role) "
                     + "VALUES ('admin', 'admin123', 'admin');";

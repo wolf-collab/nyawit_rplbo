@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.PeminjamanController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="80.0" style="-fx-background-color: #4DB6AC;">
+            <children>
+                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="PERPUSTAKAAN FURAB" textFill="WHITE"><font><Font name="System Bold" size="22.0" /></font></Label>
+                        <Label text="Kota Yogyakarta" textFill="WHITE"><font><Font size="18.0" /></font></Label>
+                    </children>
+                    <padding><Insets left="30.0" /></padding>
+                </VBox>
+                <HBox alignment="CENTER_RIGHT" spacing="25.0">
+                    <children>
+                        <Label text="HOME" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Label>
+                        <Label text="BUKU" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Label>
+                        <Label text="TENTANG KAMI" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Label>
+                        <Label text="BANTUAN" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Label>
+                    </children>
+                    <padding><Insets right="30.0" /></padding>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+            <children>
+
+                <VBox prefWidth="700.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <Label text="PEMINJAMAN BUKU" textFill="#212121">
+                                    <font><Font name="System Bold" size="18.0" /></font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <GridPane hgap="20.0" vgap="15.0" style="-fx-background-color: #f9f9f9; -fx-padding: 20; -fx-background-radius: 10;">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <VBox spacing="5.0">
+                                    <children>
+                                        <Label text="Nama Lengkap *" />
+                                        <TextField fx:id="txtNama" promptText="Masukkan nama lengkap" />
+                                        <Label text="Diisi sesuai dengan KTP" textFill="#888888"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.columnIndex="1">
+                                    <children>
+                                        <Label text="No.Identitas/NIK *" />
+                                        <TextField fx:id="txtNik" promptText="Masukkan NIK" />
+                                        <Label text="Tanpa tanda titik atau spasi" textFill="#888888"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.rowIndex="1">
+                                    <children>
+                                        <Label text="No. HP *" />
+                                        <TextField fx:id="txtNoHp" promptText="Masukkan nomor HP" />
+                                        <Label text="Masukkan nomor handphone Anda" textFill="#888888"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <children>
+                                        <Label text="Judul Buku *" />
+                                        <TextField fx:id="txtJudulBuku" promptText="Masukkan judul buku" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.rowIndex="2">
+                                    <children>
+                                        <Label text="Tanggal Pinjam *" />
+                                        <DatePicker fx:id="dpPinjam" prefWidth="350.0" />
+                                        <Label text="Format (bulan/tanggal/tahun)" textFill="#888888"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <children>
+                                        <Label text="Tanggal Kembali *" />
+                                        <DatePicker fx:id="dpKembali" prefWidth="350.0" />
+                                        <Label text="Maksimal peminjaman 7 hari" textFill="#888888"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <HBox spacing="15.0">
+                            <children>
+                                <Button onAction="#handlePinjam" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #E91E63;" text="PINJAM" textFill="WHITE"><font><Font name="System Bold" size="13.0" /></font></Button>
+                                <Button onAction="#handleBatal" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #009688;" text="BATAL" textFill="WHITE"><font><Font name="System Bold" size="13.0" /></font></Button>
+                            </children>
+                            <VBox.margin><Insets top="10.0" /></VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox prefWidth="300.0" spacing="15.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: #f0f0f0; -fx-padding: 5; -fx-background-radius: 5;">
+                            <children>
+                                <TextField promptText="Search" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS" />
+                                <Label text="🔍" />
+                            </children>
+                        </HBox>
+
+                        <VBox spacing="10.0" style="-fx-background-color: #4DB6AC; -fx-padding: 15; -fx-background-radius: 10;">
+                            <children>
+                                <Label text="Rekomendasi Buku" textFill="WHITE">
+                                    <font><Font name="System Bold" size="14.0" /></font>
+                                </Label>
+                                <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #A7FFEB; -fx-padding: 10;">
+                                    <children>
+                                        <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="https://via.placeholder.com/100x150.png?text=Buku+Masakan" />
+                                            </image>
+                                        </ImageView>
+                                        <Label text="Masakan Nusantara" textFill="#212121"><font><Font name="System Bold" size="12.0" /></font></Label>
+                                        <Label text="Penulis: Budi" textFill="#555555"><font><Font size="10.0" /></font></Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #00695C; -fx-padding: 15; -fx-background-radius: 10;">
+                            <children>
+                                <Label text="Counter" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Label>
+                                <Label text="Anda Pengunjung Ke-20" textFill="WHITE" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="120.0" style="-fx-background-color: #00796B;">
+            <children>
+                <VBox prefWidth="350.0" spacing="5.0">
+                    <children>
+                        <Label text="TENTANG KAMI" textFill="WHITE"><font><Font name="System Bold" size="13.0" /></font></Label>
+                        <Label text="Perpustakaan Furab Kota Yogyakarta...." textFill="WHITE" wrapText="true" />
+                    </children>
+                    <padding><Insets left="30.0" top="10.0" /></padding>
+                </VBox>
+                <VBox prefWidth="400.0" spacing="3.0">
+                    <children>
+                        <Label text="KONTAK KAMI" textFill="WHITE"><font><Font name="System Bold" size="13.0" /></font></Label>
+                        <Label text="Jl. Kenari No. 56, Muja Muju, Yogyakarta" textFill="WHITE" />
+                        <Label text="Telepon: (0274) 514448" textFill="WHITE" />
+                        <Label text="Email: perpustakaan@gmail.com" textFill="WHITE" />
+                    </children>
+                    <padding><Insets left="20.0" top="10.0" /></padding>
+                </VBox>
+                <VBox alignment="CENTER" prefWidth="250.0">
+                    <children>
+                        <Label text="MAPS" textFill="WHITE"><font><Font name="System Bold" size="13.0" /></font></Label>
+                        <AnchorPane prefHeight="70.0" prefWidth="180.0" style="-fx-background-color: #CCCCCC;" />
+                    </children>
+                    <padding><Insets right="30.0" /></padding>
+                </VBox>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
