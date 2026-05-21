@@ -1,9 +1,6 @@
 package com.rplbo.app.manajemen_perpustakaan;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
     private static final String URL = "jdbc:sqlite:perpustakaan.db";
@@ -19,28 +16,60 @@ public class Database {
     }
 
     public static void initializeDB() {
-        String sql = "CREATE TABLE IF NOT EXISTS users (\n"
-                + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                + " username TEXT NOT NULL UNIQUE,\n"
-                + " password TEXT NOT NULL,\n"
-                + " role TEXT NOT NULL\n"
+        String sqlUsers = "CREATE TABLE IF NOT EXISTS users ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " username TEXT NOT NULL UNIQUE,"
+                + " password TEXT NOT NULL,"
+                + " role TEXT NOT NULL"
+                + ");";
+
+        String sqlBooks = "CREATE TABLE IF NOT EXISTS books ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " title TEXT NOT NULL,"
+                + " author TEXT NOT NULL,"
+                + " publisher TEXT,"
+                + " publish_year INTEGER,"
+                + " page_count INTEGER,"
+                + " genre TEXT,"
+                + " image_path TEXT,"
+                + " status TEXT DEFAULT 'Tersedia'"
+                + ");";
+
+        String sqlLoans = "CREATE TABLE IF NOT EXISTS loans ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " username TEXT NOT NULL,"
+                + " book_id INTEGER,"
+                + " borrow_date DATE DEFAULT CURRENT_DATE,"
+                + " status TEXT DEFAULT 'Dipinjam'"
                 + ");";
 
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(sql);
-            System.out.println("Tabel users berhasil disiapkan.");
+            // 1. Eksekusi pembuatan tabel
+            stmt.execute(sqlUsers);
+            stmt.execute(sqlBooks);
+            stmt.execute(sqlLoans);
 
-            String insertAdmin = "INSERT OR IGNORE INTO users (username, password, role) "
-                    + "VALUES ('admin', 'admin123', 'admin');";
-            stmt.execute(insertAdmin);
+            // 2. Insert dummy users (pakai INSERT OR IGNORE supaya tidak error kalau sudah ada)
+            stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');");
+            stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('user', 'user123', 'user');");
 
-            String insertUser = "INSERT OR IGNORE INTO users (username, password, role) "
-                    + "VALUES ('user', 'user123', 'user');";
-            stmt.execute(insertUser);
+            // 3. Masukkan 3 buku dummy ke tabel books jika tabelnya masih kosong
+            ResultSet rsBooks = stmt.executeQuery("SELECT COUNT(*) FROM books");
+            if (rsBooks.next() && rsBooks.getInt(1) == 0) {
+                stmt.execute("INSERT INTO books (title, author) VALUES ('Pemrograman Java', 'Budi Raharjo')");
+                stmt.execute("INSERT INTO books (title, author) VALUES ('Belajar UI/UX', 'Siska')");
+                stmt.execute("INSERT INTO books (title, author) VALUES ('Database SQLite', 'Andi')");
+            }
 
-            System.out.println("Data dummy admin & user berhasil ditambahkan.");
+            // 4. Masukkan 1 peminjaman dummy ke tabel loans jika tabelnya masih kosong
+            ResultSet rsLoans = stmt.executeQuery("SELECT COUNT(*) FROM loans");
+            if (rsLoans.next() && rsLoans.getInt(1) == 0) {
+                stmt.execute("INSERT INTO loans (username, book_id) VALUES ('user', 1)");
+            }
+
+            System.out.println("Database dan tabel berhasil diinisialisasi.");
 
         } catch (SQLException e) {
             System.out.println("Gagal menyiapkan database: " + e.getMessage());

@@ -42,10 +42,10 @@ public class HelloController {
 
                 if (role.equalsIgnoreCase("admin")) {
                     fxmlFile = "admin-dashboard.fxml";
-                    title = "Admin Panel - Perpustakaan Furab";
+                    title = "Admin Panel - Furab💜 Manajemen Perpustakaan";
                 } else {
                     fxmlFile = "user-dashboard.fxml";
-                    title = "Katalog Buku - Perpustakaan Furab";
+                    title = "Katalog Buku - Furab💜 Manajemen Perpustakaan";
                 }
 
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
