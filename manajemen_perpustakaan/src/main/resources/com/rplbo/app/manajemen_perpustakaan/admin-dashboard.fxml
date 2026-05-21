@@ -4,29 +4,24 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.AdminDashboardController">
-
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.AdminDashboardController">
     <left>
         <VBox prefWidth="200.0" spacing="10.0" style="-fx-background-color: #2b7a63; -fx-padding: 20;">
-
             <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;" text="ADMIN PANEL">
                 <VBox.margin><Insets bottom="20.0" /></VBox.margin>
             </Label>
-
             <Button fx:id="btnMenuDashboard" onAction="#showDashboard" maxWidth="Infinity" style="-fx-background-color: #1e5646; -fx-text-fill: white; -fx-alignment: center-left;" text="Dashboard" />
             <Button fx:id="btnMenuDataBuku" onAction="#showDataBuku" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Data Buku" />
+            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Data Anggota" />
+            <Button maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Peminjaman" />
             <VBox VBox.vgrow="ALWAYS" />
             <Button onAction="#handleLogout" maxWidth="Infinity" style="-fx-background-color: #ff4444; -fx-text-fill: white;" text="LOGOUT" />
         </VBox>
     </left>
-
     <center>
         <StackPane>
-
             <VBox fx:id="pageDashboard" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="true">
-
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Statistik Perpustakaan" />
-
+                <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Dashboard Informasi" />
                 <HBox spacing="20.0">
                     <VBox alignment="CENTER" prefWidth="180.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
                         <Label text="Total Buku" textFill="#777777" />
@@ -37,16 +32,30 @@
                         <Label fx:id="totalAnggotaLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" text="0" />
                     </VBox>
                     <VBox alignment="CENTER" prefWidth="180.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
-                        <Label text="Dipinjam" textFill="#777777" />
+                        <Label text="Dipinjam Hari Ini" textFill="#777777" />
                         <Label fx:id="totalPinjamLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" text="0" />
                     </VBox>
                 </HBox>
+                <HBox spacing="20" VBox.vgrow="ALWAYS">
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Peminjaman Terbaru" />
+                        <TableView VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn text="Nama Peminjam" prefWidth="150" />
+                                <TableColumn text="Judul Buku" prefWidth="200" />
+                                <TableColumn text="Status" prefWidth="100" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+                    <VBox spacing="10" prefWidth="300" style="-fx-background-color: #ffcccc; -fx-padding: 15; -fx-background-radius: 10;">
+                        <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #cc0000;" text="Laporan &amp; Keluhan" />
+                        <TextArea editable="false" wrapText="true" text="1. Budi (User) melaporkan buku 'Pemrograman Java' sobek di halaman 20.&#10;&#10;2. Siska (User) melaporkan buku 'Belajar UI/UX' hilang terbawa air banjir." VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-control-inner-background: #ffcccc;" />
+                        <Button text="Kelola Laporan" maxWidth="Infinity" style="-fx-background-color: #cc0000; -fx-text-fill: white;"/>
+                    </VBox>
+                </HBox>
             </VBox>
-
             <VBox fx:id="pageDataBuku" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="false">
-
                 <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Kelola Data Buku" />
-
                 <HBox spacing="20">
                     <VBox spacing="10" prefWidth="350" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
                         <TextField fx:id="titleField" promptText="Judul Buku" />
@@ -57,7 +66,6 @@
                             <TextField fx:id="pagesField" promptText="Jml Halaman" prefWidth="150" />
                         </HBox>
                         <ComboBox fx:id="genreComboBox" promptText="Pilih Genre" maxWidth="Infinity" />
-
                         <HBox spacing="10" alignment="CENTER_LEFT">
                             <Button text="Pilih Cover" onAction="#handleSelectImage" />
                             <Label fx:id="imagePathLabel" text="Tidak ada" style="-fx-font-size: 10;" />
@@ -65,18 +73,16 @@
                         <ImageView fx:id="previewImage" fitHeight="100" fitWidth="80" preserveRatio="true" />
                         <Button text="TAMBAH BUKU" maxWidth="Infinity" style="-fx-background-color: #2b7a63; -fx-text-fill: white;" onAction="#handleAddBook" />
                     </VBox>
-
                     <TableView fx:id="bookTable" HBox.hgrow="ALWAYS">
                         <columns>
-                            <TableColumn text="Judul" prefWidth="200" />
-                            <TableColumn text="Pengarang" prefWidth="150" />
-                            <TableColumn text="Penerbit" prefWidth="150" />
-                            <TableColumn text="Genre" prefWidth="100" />
+                            <TableColumn fx:id="colJudul" text="Judul" prefWidth="200" />
+                            <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="150" />
+                            <TableColumn fx:id="colPenerbit" text="Penerbit" prefWidth="150" />
+                            <TableColumn fx:id="colGenre" text="Genre" prefWidth="100" />
                         </columns>
                     </TableView>
                 </HBox>
             </VBox>
-
         </StackPane>
     </center>
 </BorderPane>
