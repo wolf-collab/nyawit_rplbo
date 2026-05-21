@@ -2,58 +2,62 @@ package com.rplbo.app.manajemen_perpustakaan;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
-    private static final String URL = "jdbc:sqlite:perpustakaan.db";
 
     public static Connection connect() {
-        Connection conn = null;
         try {
-            conn = DriverManager.getConnection(URL);
-        } catch (SQLException e) {
-            System.out.println("Gagal koneksi ke SQLite: " + e.getMessage());
+            Class.forName("org.sqlite.JDBC");
+            return DriverManager.getConnection("jdbc:sqlite:perpustakaan.db");
+        } catch (Exception e) {
+            System.out.println("Koneksi gagal: " + e.getMessage());
+            return null;
         }
-        return conn;
     }
 
     public static void initializeDB() {
-        String sql = "CREATE TABLE IF NOT EXISTS users (\n"
-                + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                + " username TEXT NOT NULL UNIQUE,\n"
-                + " password TEXT NOT NULL,\n"
-                + " role TEXT NOT NULL\n"
+        String sqlUsers = "CREATE TABLE IF NOT EXISTS users ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " username TEXT NOT NULL UNIQUE,"
+                + " password TEXT NOT NULL,"
+                + " role TEXT NOT NULL"
                 + ");";
 
-        String sqlPeminjaman = "CREATE TABLE IF NOT EXISTS peminjaman (\n"
-                + " id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                + " nama TEXT NOT NULL,\n"
-                + " nik TEXT NOT NULL,\n"
-                + " no_hp TEXT NOT NULL,\n"
-                + " judul_buku TEXT NOT NULL,\n"
-                + " tgl_pinjam TEXT NOT NULL,\n"
-                + " tgl_kembali TEXT NOT NULL\n"
+        String sqlBooks = "CREATE TABLE IF NOT EXISTS books ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " title TEXT NOT NULL,"
+                + " author TEXT NOT NULL,"
+                + " publisher TEXT,"
+                + " publish_year INTEGER,"
+                + " page_count INTEGER,"
+                + " genre TEXT,"
+                + " image_path TEXT,"
+                + " status TEXT DEFAULT 'Tersedia'"
+                + ");";
+
+        String sqlLoans = "CREATE TABLE IF NOT EXISTS loans ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " username TEXT NOT NULL,"
+                + " book_id INTEGER,"
+                + " borrow_date DATE DEFAULT CURRENT_DATE,"
+                + " status TEXT DEFAULT 'Dipinjam'"
                 + ");";
 
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(sql);
-            System.out.println("Tabel users berhasil disiapkan.");
+            stmt.execute(sqlUsers);
+            stmt.execute(sqlBooks);
+            stmt.execute(sqlLoans);
 
-            stmt.execute(sqlPeminjaman);
-            System.out.println("Tabel peminjaman berhasil disiapkan.");
+            // Insert dummy users
+            stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');");
+            stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('user', 'user123', 'user');");
 
-            String insertAdmin = "INSERT OR IGNORE INTO users (username, password, role) "
-                    + "VALUES ('admin', 'admin123', 'admin');";
-            stmt.execute(insertAdmin);
-
-            String insertUser = "INSERT OR IGNORE INTO users (username, password, role) "
-                    + "VALUES ('user', 'user123', 'user');";
-            stmt.execute(insertUser);
-
-            System.out.println("Data dummy admin & user berhasil ditambahkan.");
+            System.out.println("Database dan tabel berhasil diinisialisasi.");
 
         } catch (SQLException e) {
             System.out.println("Gagal menyiapkan database: " + e.getMessage());

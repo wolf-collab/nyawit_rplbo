@@ -17,11 +17,8 @@ import java.sql.SQLException;
 
 public class HelloController {
 
-    @FXML
-    private TextField usernameField;
-
-    @FXML
-    private PasswordField passwordField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
 
     @FXML
     void handleLogin(ActionEvent event) {
@@ -37,8 +34,8 @@ public class HelloController {
 
         if (role != null) {
             try {
-                String fxmlFile = "";
-                String title = "";
+                String fxmlFile;
+                String title;
 
                 if (role.equalsIgnoreCase("admin")) {
                     fxmlFile = "admin-dashboard.fxml";
@@ -49,8 +46,7 @@ public class HelloController {
                 }
 
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
-                Scene scene = new Scene(fxmlLoader.load(), 800, 500);
-
+                Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setTitle(title);
                 stage.setScene(scene);
@@ -67,19 +63,14 @@ public class HelloController {
 
     private String checkUserRole(String username, String password) {
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
-
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-
             pstmt.setString(1, username);
             pstmt.setString(2, password);
-
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getString("role");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
