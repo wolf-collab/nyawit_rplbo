@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84f0bd93-ddb3-443e-aef6-e07bdfc52db9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/AdminDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/UserDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/UserDashboardController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +54,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Peminjaman",
+    "git-widget-placeholder": "pencarian",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/jerry/UG progweb/nyawit_rplbo",
@@ -62,7 +63,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "MavenSettings",
@@ -73,8 +74,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.32098.37" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.32098.37" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.33514.17" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.33514.17" />
       </set>
     </attachedChunks>
   </component>
@@ -86,6 +87,9 @@
       <option name="presentableId" value="Default" />
       <updated>1779323649781</updated>
       <workItem from="1779323650863" duration="1677000" />
+      <workItem from="1779711960987" duration="2826000" />
+      <workItem from="1779802440921" duration="377000" />
+      <workItem from="1779802881585" duration="16000" />
     </task>
     <servers />
   </component>
