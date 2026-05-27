@@ -46,12 +46,20 @@ public class Database {
                 + " status TEXT DEFAULT 'Dipinjam'"
                 + ");";
 
+        String sqlComplaints = "CREATE TABLE IF NOT EXISTS complaints ("
+                + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + " username TEXT NOT NULL,"
+                + " message TEXT NOT NULL,"
+                + " tanggal DATE DEFAULT CURRENT_DATE"
+                + ");";
+
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
             stmt.execute(sqlUsers);
             stmt.execute(sqlBooks);
             stmt.execute(sqlLoans);
+            stmt.execute(sqlComplaints);
 
             // Insert dummy users
             stmt.execute("INSERT OR IGNORE INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');");

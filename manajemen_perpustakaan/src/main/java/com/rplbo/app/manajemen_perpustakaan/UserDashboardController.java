@@ -2,6 +2,7 @@ package com.rplbo.app.manajemen_perpustakaan;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,310 +10,190 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.regex.Pattern;
 
-public class AdminDashboardController {
+public class UserDashboardController {
 
-    // ── Sidebar ───────────────────────────────────────────────────────────────
-    @FXML private Button btnMenuDashboard;
-    @FXML private Button btnMenuDataBuku;
-    @FXML private Button btnMenuAnggota;
-    @FXML private Button btnMenuLaporan;
+    @FXML private VBox pageKatalog, pageBookmark, pagePinjaman, pageLapor;
+    @FXML private Button btnMenuKatalog, btnMenuBookmark, btnMenuPinjaman, btnMenuLapor;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> filterGenre;
+    @FXML private Label labelHasilCari, labelJumlahBookmark;
+    @FXML private TextArea txtKeluhan;
 
-    // ── Pages ─────────────────────────────────────────────────────────────────
-    @FXML private VBox pageDashboard;
-    @FXML private VBox pageDataBuku;
+    @FXML private TableView<BookModel> katalogTable;
+    @FXML private TableColumn<BookModel, String> colBookmark, colJudul, colPengarang, colGenre, colStatus;
+    @FXML private TableView<BookModel> bookmarkTable;
+    @FXML private TableColumn<BookModel, String> colBmJudul, colBmPengarang, colBmGenre, colBmStatus;
+    @FXML private TableView<BookModel> pinjamanTable;
+    @FXML private TableColumn<BookModel, String> colPjJudul, colPjPengarang, colPjStatus;
 
-    // ── Dashboard stats ───────────────────────────────────────────────────────
-    @FXML private Label totalBukuLabel;
-    @FXML private Label totalAnggotaLabel;
-    @FXML private Label totalPinjamLabel;
-
-    // ── Form tambah/edit buku ─────────────────────────────────────────────────
-    @FXML private TextField titleField;
-    @FXML private TextField authorField;
-    @FXML private TextField publisherField;
-    @FXML private TextField yearField;
-    @FXML private TextField pagesField;
-    @FXML private ComboBox<String> genreComboBox;
-    @FXML private Label imagePathLabel;
-    @FXML private ImageView previewImage;
-    @FXML private Button btnSimpan;
-    @FXML private Label labelFormMode; // "Tambah Buku Baru" atau "Edit Buku"
-
-    // ── Tabel buku ────────────────────────────────────────────────────────────
-    @FXML private TableView<BookModel> tableBuku;
-    @FXML private TableColumn<BookModel, Integer> colId;
-    @FXML private TableColumn<BookModel, String>  colJudul;
-    @FXML private TableColumn<BookModel, String>  colPengarang;
-    @FXML private TableColumn<BookModel, String>  colGenre;
-    @FXML private TableColumn<BookModel, String>  colStatus;
-
-    private String selectedImagePath = "";
-    private Integer editingBookId    = null; // null = mode tambah, ada nilai = mode edit
     private ObservableList<BookModel> bookList = FXCollections.observableArrayList();
+    private ObservableList<BookModel> bookmarkList = FXCollections.observableArrayList();
+    private ObservableList<BookModel> pinjamanList = FXCollections.observableArrayList();
+    private FilteredList<BookModel> filteredData;
 
-    // ─────────────────────────────────────────────────────────────────────────
     @FXML
     public void initialize() {
-        genreComboBox.getItems().addAll("Fiksi", "Non-Fiksi", "Komputer", "Sains", "Sejarah", "Sastra");
-        setupTabelBuku();
-        showDashboard();
+        filterGenre.getItems().addAll("Semua", "Fiksi", "Non-Fiksi", "Komputer", "Sains", "Sejarah", "Sastra");
+        filterGenre.getSelectionModel().selectFirst();
+
+        setupTables();
+        loadBooks();
+        loadPinjaman();
+        setupSearchAndFilter();
+
+        showKatalog();
     }
 
-    // ── Setup tabel ───────────────────────────────────────────────────────────
-    private void setupTabelBuku() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+    private void setupTables() {
+        colBookmark.setCellValueFactory(new PropertyValueFactory<>("bookmarked"));
         colJudul.setCellValueFactory(new PropertyValueFactory<>("title"));
         colPengarang.setCellValueFactory(new PropertyValueFactory<>("author"));
         colGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Warna status
-        colStatus.setCellFactory(col -> new TableCell<>() {
-            @Override protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setText(null); setStyle(""); return; }
-                setText(item);
-                setStyle(item.equals("Tersedia")
-                        ? "-fx-text-fill: #1e7d46; -fx-font-weight: bold;"
-                        : "-fx-text-fill: #c0392b; -fx-font-weight: bold;");
-            }
-        });
+        colBmJudul.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colBmPengarang.setCellValueFactory(new PropertyValueFactory<>("author"));
+        colBmGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
+        colBmStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Klik baris → isi form untuk edit
-        tableBuku.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
-            if (selected != null) fillFormForEdit(selected);
-        });
-
-        tableBuku.setItems(bookList);
+        colPjJudul.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colPjPengarang.setCellValueFactory(new PropertyValueFactory<>("author"));
+        colPjStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
     }
 
-    // ── Load data buku ────────────────────────────────────────────────────────
     private void loadBooks() {
         bookList.clear();
-        String sql = "SELECT id, title, author, genre, status FROM books ORDER BY title ASC";
-        try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                bookList.add(new BookModel(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getString("genre"),
-                        rs.getString("status"),
-                        false
-                ));
-            }
+        String sql = "SELECT * FROM books ORDER BY title ASC";
+        try (Connection conn = Database.connect(); PreparedStatement p = conn.prepareStatement(sql); ResultSet rs = p.executeQuery()) {
+            while (rs.next()) bookList.add(new BookModel(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("publisher"), rs.getString("genre"), rs.getString("status"), false));
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // ── Navigasi halaman ──────────────────────────────────────────────────────
-    @FXML void showDashboard() {
-        pageDashboard.setVisible(true);
-        pageDataBuku.setVisible(false);
-        setActiveMenu(btnMenuDashboard);
-        loadDashboardStatistics();
-    }
-
-    @FXML void showDataBuku() {
-        pageDashboard.setVisible(false);
-        pageDataBuku.setVisible(true);
-        setActiveMenu(btnMenuDataBuku);
-        loadBooks();
-        resetForm();
-    }
-
-    @FXML void showManajemenAnggota(ActionEvent event) {
-        navigateTo("manajemen-anggota.fxml", "Manajemen Anggota - Furab💜", event);
-    }
-
-    @FXML void showLaporan(ActionEvent event) {
-        navigateTo("laporan-kondisi.fxml", "Laporan Koleksi - Furab💜", event);
-    }
-
-    private void setActiveMenu(Button active) {
-        String on  = "-fx-background-color: #1e5646; -fx-text-fill: white; -fx-alignment: center-left;";
-        String off = "-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;";
-        for (Button b : new Button[]{btnMenuDashboard, btnMenuDataBuku, btnMenuAnggota, btnMenuLaporan})
-            if (b != null) b.setStyle(off);
-        active.setStyle(on);
-    }
-
-    // ── Dashboard stats ───────────────────────────────────────────────────────
-    private void loadDashboardStatistics() {
-        totalBukuLabel.setText(String.valueOf(count("SELECT COUNT(*) FROM books")));
-        totalAnggotaLabel.setText(String.valueOf(count("SELECT COUNT(*) FROM users WHERE role = 'user'")));
-        totalPinjamLabel.setText(String.valueOf(count("SELECT COUNT(*) FROM loans WHERE status = 'Dipinjam'")));
-    }
-
-    private int count(String query) {
-        try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(query);
-             ResultSet rs = pstmt.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
+    private void loadPinjaman() {
+        pinjamanList.clear();
+        String sql = "SELECT b.title, b.author, l.status FROM loans l JOIN books b ON l.book_id = b.id WHERE l.username = 'user'";
+        try (Connection conn = Database.connect(); PreparedStatement p = conn.prepareStatement(sql); ResultSet rs = p.executeQuery()) {
+            while (rs.next()) pinjamanList.add(new BookModel(0, rs.getString("title"), rs.getString("author"), "", "", rs.getString("status"), false));
+            pinjamanTable.setItems(pinjamanList);
         } catch (SQLException e) { e.printStackTrace(); }
-        return 0;
     }
 
-    // ── Form: pilih gambar ────────────────────────────────────────────────────
-    @FXML void handleSelectImage() {
-        FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-        File file = fc.showOpenDialog(null);
-        if (file != null) {
-            selectedImagePath = file.toURI().toString();
-            imagePathLabel.setText(file.getName());
-            previewImage.setImage(new Image(selectedImagePath));
-        }
+    private void setupSearchAndFilter() {
+        filteredData = new FilteredList<>(bookList, p -> true);
+        searchField.textProperty().addListener((obs, oldV, newV) -> filterData());
+        filterGenre.valueProperty().addListener((obs, oldV, newV) -> filterData());
+        katalogTable.setItems(filteredData);
     }
 
-    // ── Simpan (tambah atau edit) ─────────────────────────────────────────────
-    @FXML void handleSimpanBuku() {
-        String title  = titleField.getText().trim();
-        String author = authorField.getText().trim();
-        if (title.isEmpty() || author.isEmpty()) {
-            showAlert("Peringatan", "Judul dan Pengarang tidak boleh kosong!"); return;
-        }
-        int year = 0, pages = 0;
-        try {
-            if (!yearField.getText().isEmpty())  year  = Integer.parseInt(yearField.getText().trim());
-            if (!pagesField.getText().isEmpty()) pages = Integer.parseInt(pagesField.getText().trim());
-        } catch (NumberFormatException e) {
-            showAlert("Peringatan", "Tahun dan Jumlah Halaman harus berupa angka!"); return;
-        }
+    private void filterData() {
+        String filterText = searchField.getText();
+        String genreFilter = filterGenre.getValue();
 
-        if (editingBookId == null) {
-            insertBook(title, author, publisherField.getText().trim(), year, pages,
-                    genreComboBox.getValue(), selectedImagePath);
-        } else {
-            updateBook(editingBookId, title, author, publisherField.getText().trim(),
-                    year, pages, genreComboBox.getValue(), selectedImagePath);
-        }
+        filteredData.setPredicate(book -> {
+            boolean matchesGenre = genreFilter.equals("Semua") || book.getGenre().equalsIgnoreCase(genreFilter);
+            if (filterText == null || filterText.isEmpty()) return matchesGenre;
+
+            Pattern pattern = Pattern.compile(Pattern.quote(filterText), Pattern.CASE_INSENSITIVE);
+            boolean matchesSearch = pattern.matcher(book.getTitle()).find() || pattern.matcher(book.getAuthor()).find();
+            return matchesGenre && matchesSearch;
+        });
+        labelHasilCari.setText("Ditemukan " + filteredData.size() + " buku.");
     }
 
-    private void insertBook(String title, String author, String publisher,
-                            int year, int pages, String genre, String imgPath) {
-        String sql = "INSERT INTO books (title, author, publisher, publish_year, page_count, genre, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = Database.connect();
-             PreparedStatement p = conn.prepareStatement(sql)) {
-            p.setString(1, title); p.setString(2, author); p.setString(3, publisher);
-            p.setInt(4, year);     p.setInt(5, pages);     p.setString(6, genre);
-            p.setString(7, imgPath);
-            p.executeUpdate();
-            showAlert("Sukses", "Buku berhasil ditambahkan!");
-            resetForm(); loadBooks();
-        } catch (SQLException e) { e.printStackTrace(); showAlert("Error", "Gagal menyimpan buku."); }
-    }
+    @FXML
+    void handlePinjamBuku() {
+        BookModel selected = katalogTable.getSelectionModel().getSelectedItem();
+        if (selected == null) { showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih buku dulu!"); return; }
+        if (!selected.getStatus().equalsIgnoreCase("Tersedia")) { showAlert(Alert.AlertType.ERROR, "Maaf", "Buku sedang dipinjam."); return; }
 
-    private void updateBook(int id, String title, String author, String publisher,
-                            int year, int pages, String genre, String imgPath) {
-        String sql = "UPDATE books SET title=?, author=?, publisher=?, publish_year=?, page_count=?, genre=?, image_path=? WHERE id=?";
-        try (Connection conn = Database.connect();
-             PreparedStatement p = conn.prepareStatement(sql)) {
-            p.setString(1, title); p.setString(2, author); p.setString(3, publisher);
-            p.setInt(4, year);     p.setInt(5, pages);     p.setString(6, genre);
-            p.setString(7, imgPath); p.setInt(8, id);
-            p.executeUpdate();
-            showAlert("Sukses", "Buku berhasil diperbarui!");
-            resetForm(); loadBooks();
-        } catch (SQLException e) { e.printStackTrace(); showAlert("Error", "Gagal mengupdate buku."); }
-    }
-
-    // ── Hapus buku ────────────────────────────────────────────────────────────
-    @FXML void handleHapusBuku() {
-        BookModel selected = tableBuku.getSelectionModel().getSelectedItem();
-        if (selected == null) { showAlert("Peringatan", "Pilih buku yang ingin dihapus!"); return; }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Konfirmasi Hapus");
-        confirm.setHeaderText(null);
-        confirm.setContentText("Yakin ingin menghapus buku \"" + selected.getTitle() + "\"?");
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Yakin mau pinjam '" + selected.getTitle() + "'?", ButtonType.YES, ButtonType.NO);
         confirm.showAndWait().ifPresent(resp -> {
-            if (resp == ButtonType.OK) {
-                String sql = "DELETE FROM books WHERE id = ?";
-                try (Connection conn = Database.connect();
-                     PreparedStatement p = conn.prepareStatement(sql)) {
-                    p.setInt(1, selected.getId());
-                    p.executeUpdate();
-                    showAlert("Sukses", "Buku berhasil dihapus!");
-                    resetForm(); loadBooks();
+            if (resp == ButtonType.YES) {
+                try (Connection conn = Database.connect()) {
+                    try (PreparedStatement p1 = conn.prepareStatement("INSERT INTO loans (username, book_id, borrow_date, status) VALUES ('user', ?, CURRENT_DATE, 'Dipinjam')")) {
+                        p1.setInt(1, selected.getId()); p1.executeUpdate();
+                    }
+                    try (PreparedStatement p2 = conn.prepareStatement("UPDATE books SET status = 'Dipinjam' WHERE id = ?")) {
+                        p2.setInt(1, selected.getId()); p2.executeUpdate();
+                    }
+                    showAlert(Alert.AlertType.INFORMATION, "Sukses!", "Buku berhasil dipinjam!");
+                    loadBooks(); loadPinjaman();
                 } catch (SQLException e) { e.printStackTrace(); }
             }
         });
     }
 
-    // ── Reset form ke mode tambah ─────────────────────────────────────────────
-    @FXML void handleResetForm() { resetForm(); }
+    @FXML
+    void kirimLaporan() {
+        String keluhan = txtKeluhan.getText().trim();
+        if (keluhan.isEmpty()) { showAlert(Alert.AlertType.WARNING, "Peringatan", "Keluhan tidak boleh kosong!"); return; }
 
-    private void resetForm() {
-        editingBookId = null;
-        titleField.clear(); authorField.clear(); publisherField.clear();
-        yearField.clear();  pagesField.clear();
-        genreComboBox.getSelectionModel().clearSelection();
-        imagePathLabel.setText("Tidak ada");
-        previewImage.setImage(null);
-        selectedImagePath = "";
-        if (labelFormMode != null) labelFormMode.setText("Tambah Buku Baru");
-        if (btnSimpan != null) btnSimpan.setText("Tambah Buku");
-        tableBuku.getSelectionModel().clearSelection();
-    }
-
-    // ── Isi form saat baris tabel diklik (mode edit) ──────────────────────────
-    private void fillFormForEdit(BookModel book) {
-        editingBookId = book.getId();
-        // Ambil data lengkap dari DB (tabel mungkin tidak punya publisher dll)
-        String sql = "SELECT * FROM books WHERE id = ?";
-        try (Connection conn = Database.connect();
-             PreparedStatement p = conn.prepareStatement(sql)) {
-            p.setInt(1, book.getId());
-            ResultSet rs = p.executeQuery();
-            if (rs.next()) {
-                titleField.setText(rs.getString("title"));
-                authorField.setText(rs.getString("author"));
-                publisherField.setText(rs.getString("publisher") != null ? rs.getString("publisher") : "");
-                yearField.setText(rs.getInt("publish_year") != 0 ? String.valueOf(rs.getInt("publish_year")) : "");
-                pagesField.setText(rs.getInt("page_count") != 0 ? String.valueOf(rs.getInt("page_count")) : "");
-                genreComboBox.setValue(rs.getString("genre"));
-                selectedImagePath = rs.getString("image_path") != null ? rs.getString("image_path") : "";
-                if (!selectedImagePath.isEmpty()) {
-                    previewImage.setImage(new Image(selectedImagePath));
-                    imagePathLabel.setText("Gambar tersimpan");
-                }
-            }
+        String sql = "INSERT INTO complaints (username, message) VALUES ('user', ?)";
+        try (Connection conn = Database.connect(); PreparedStatement p = conn.prepareStatement(sql)) {
+            p.setString(1, keluhan); p.executeUpdate();
+            showAlert(Alert.AlertType.INFORMATION, "Berhasil", "Laporan dikirim ke Admin!");
+            txtKeluhan.clear();
         } catch (SQLException e) { e.printStackTrace(); }
-
-        if (labelFormMode != null) labelFormMode.setText("Edit Buku (ID: " + book.getId() + ")");
-        if (btnSimpan != null) btnSimpan.setText("Simpan Perubahan");
     }
 
-    // ── Logout ────────────────────────────────────────────────────────────────
+    @FXML
+    void handleToggleBookmark() {
+        BookModel selected = katalogTable.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+        if (selected.getBookmarked().equals("☆")) {
+            selected.setBookmarked(true);
+            if(!bookmarkList.contains(selected)) bookmarkList.add(selected);
+        } else {
+            selected.setBookmarked(false); bookmarkList.remove(selected);
+        }
+        katalogTable.refresh(); labelJumlahBookmark.setText(bookmarkList.size() + " buku dalam favorit");
+    }
+
+    @FXML
+    void handleHapusBookmark() {
+        BookModel selected = bookmarkTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            selected.setBookmarked(false); bookmarkList.remove(selected);
+            katalogTable.refresh(); labelJumlahBookmark.setText(bookmarkList.size() + " buku dalam favorit");
+        }
+    }
+
+    @FXML void handleResetFilter() { searchField.clear(); filterGenre.getSelectionModel().selectFirst(); }
+    @FXML void showKatalog() { switchPage(pageKatalog, btnMenuKatalog); }
+    @FXML void showBookmark() { switchPage(pageBookmark, btnMenuBookmark); bookmarkTable.setItems(bookmarkList); }
+    @FXML void showPinjaman() { switchPage(pagePinjaman, btnMenuPinjaman); }
+    @FXML void showLapor() { switchPage(pageLapor, btnMenuLapor); }
+
+    private void switchPage(VBox targetPage, Button targetBtn) {
+        pageKatalog.setVisible(false); pageBookmark.setVisible(false);
+        pagePinjaman.setVisible(false); pageLapor.setVisible(false);
+        targetPage.setVisible(true);
+
+        String off = "-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 10 16;";
+        btnMenuKatalog.setStyle(off); btnMenuBookmark.setStyle(off);
+        btnMenuPinjaman.setStyle(off); btnMenuLapor.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffcccc; -fx-alignment: center-left; -fx-padding: 10 16;");
+        targetBtn.setStyle("-fx-background-color: #1e5646; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 10 16;");
+    }
+
     @FXML void handleLogout(ActionEvent event) {
-        navigateTo("hello-view.fxml", "Furab💜 - Login", event);
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-    private void navigateTo(String fxml, String title, ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Scene scene = new Scene(loader.load(), 900, 600);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(scene);
-        } catch (Exception e) { e.printStackTrace(); }
+            stage.setTitle("Furab💜 - Login"); stage.setScene(new Scene(loader.load(), 800, 500));
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title); alert.setHeaderText(null);
-        alert.setContentText(message); alert.showAndWait();
+    private void showAlert(Alert.AlertType type, String title, String msg) {
+        Alert alert = new Alert(type); alert.setTitle(title); alert.setHeaderText(null); alert.setContentText(msg); alert.showAndWait();
     }
 }

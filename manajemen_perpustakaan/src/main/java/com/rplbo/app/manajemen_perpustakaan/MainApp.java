@@ -10,16 +10,16 @@ import java.io.IOException;
 public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        // Menjalankan pengecekan tabel database saat aplikasi dibuka
+        // Inisialisasi database SQLite
         Database.initializeDB();
 
-        // Langsung meload halaman peminjaman buku
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("Peminjaman_view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1080, 720);
+        // Buka halaman Login pertama kali
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("hello-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 500);
 
-        stage.setTitle("Aplikasi Perpustakaan Furab - Form Peminjaman");
+        stage.setTitle("Furab💜 Aplikasi Manajemen Perpustakaan");
         stage.setScene(scene);
-        stage.setResizable(true); // Memperbolehkan ukuran aplikasi di-resize
+        stage.setResizable(false);
         stage.show();
     }
 

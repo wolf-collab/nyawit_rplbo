@@ -4,6 +4,7 @@ import javafx.application.Application;
 
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(HelloApplication.class, args);
+        // Ubah dari HelloApplication.class menjadi MainApp.class
+        Application.launch(MainApp.class, args);
     }
 }
