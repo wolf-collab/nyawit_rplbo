@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.AdminDashboardController">
     <left>
-        <VBox prefWidth="200.0" spacing="10.0" style="-fx-background-color: #2b7a63; -fx-padding: 20;">
-            <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;" text="ADMIN PANEL">
-                <VBox.margin><Insets bottom="20.0" /></VBox.margin>
-            </Label>
-            <Button fx:id="btnMenuDashboard" onAction="#showDashboard" maxWidth="Infinity" style="-fx-background-color: #1e5646; -fx-text-fill: white; -fx-alignment: center-left;" text="Dashboard" />
-            <Button fx:id="btnMenuDataBuku" onAction="#showDataBuku" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Data Buku" />
-            <Button fx:id="btnMenuAnggota" onAction="#showDataAnggota" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Data Anggota" />
-            <Button fx:id="btnMenuPinjaman" onAction="#showPinjaman" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left;" text="Peminjaman" />
-            <VBox VBox.vgrow="ALWAYS" />
-            <Button onAction="#handleLogout" maxWidth="Infinity" style="-fx-background-color: #ff4444; -fx-text-fill: white;" text="LOGOUT" />
+        <VBox prefWidth="240.0" spacing="5.0" style="-fx-background-color: #4DB6AC; -fx-padding: 20 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);">
+            <Label text="MENU" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 0 0 10 15; -fx-opacity: 0.8;" />
+
+            <Button fx:id="btnMenuDashboard" text="☁  Dashboard" onAction="#showDashboard" maxWidth="Infinity" style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 12 20; -fx-font-weight: bold; -fx-cursor: hand;" />
+            <Button fx:id="btnMenuDataBuku" text="📚  Data Buku" onAction="#showDataBuku" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 12 20; -fx-font-weight: bold; -fx-cursor: hand;" />
+            <Button fx:id="btnMenuPinjaman" text="🛒  Data Peminjaman" onAction="#showPinjaman" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 12 20; -fx-font-weight: bold; -fx-cursor: hand;" />
+
+            <Label text="SETTING" style="-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 20 0 10 15; -fx-opacity: 0.8;" />
+            <Button fx:id="btnMenuAnggota" text="⚙  Data Akun (User)" onAction="#showDataAnggota" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 12 20; -fx-font-weight: bold; -fx-cursor: hand;" />
+
+            <Region VBox.vgrow="ALWAYS" />
+            <Button text="Log Out" onAction="#handleLogout" maxWidth="Infinity" style="-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-alignment: center; -fx-padding: 12; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
         </VBox>
     </left>
     <center>
-        <StackPane>
-            <VBox fx:id="pageDashboard" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="true">
-                <HBox spacing="20" alignment="CENTER_LEFT">
-                    <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Dashboard Informasi" />
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="Buka Form Peminjaman Offline" onAction="#bukaFormPeminjaman" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
-                </HBox>
+        <StackPane style="-fx-padding: 25;">
+            <VBox fx:id="pageDashboard" visible="true" spacing="25">
                 <HBox spacing="20.0">
-                    <VBox alignment="CENTER" prefWidth="180.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-                        <Label text="Total Buku" textFill="#777777" />
-                        <Label fx:id="totalBukuLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" text="0" />
+                    <VBox alignment="CENTER_LEFT" prefWidth="250.0" style="-fx-background-color: white; -fx-border-color: #00695c; -fx-border-width: 2px; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 20;">
+                        <Label text="Total Buku" style="-fx-text-fill: #555; -fx-font-size: 14px;" />
+                        <Label fx:id="totalBukuLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #00695c;" />
                     </VBox>
-                    <VBox alignment="CENTER" prefWidth="180.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-                        <Label text="Anggota Aktif" textFill="#777777" />
-                        <Label fx:id="totalAnggotaLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" text="0" />
+                    <VBox alignment="CENTER_LEFT" prefWidth="250.0" style="-fx-background-color: white; -fx-border-color: #00695c; -fx-border-width: 2px; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 20;">
+                        <Label text="Anggota Aktif" style="-fx-text-fill: #555; -fx-font-size: 14px;" />
+                        <Label fx:id="totalAnggotaLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #00695c;" />
                     </VBox>
-                    <VBox alignment="CENTER" prefWidth="180.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
-                        <Label text="Buku Dipinjam" textFill="#777777" />
-                        <Label fx:id="totalPinjamLabel" style="-fx-font-size: 24; -fx-font-weight: bold;" text="0" />
+                    <VBox alignment="CENTER_LEFT" prefWidth="250.0" style="-fx-background-color: white; -fx-border-color: #00695c; -fx-border-width: 2px; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 20;">
+                        <Label text="Buku Sedang Dipinjam" style="-fx-text-fill: #555; -fx-font-size: 14px;" />
+                        <Label fx:id="totalPinjamLabel" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #00695c;" />
                     </VBox>
                 </HBox>
                 <HBox spacing="20" VBox.vgrow="ALWAYS">
-                    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;" HBox.hgrow="ALWAYS">
-                        <Label text="Statistik Status Buku" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;" HBox.hgrow="ALWAYS">
+                        <Label text="Statistik Buku &amp; Keluhan" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
                         <PieChart fx:id="chartBuku" VBox.vgrow="ALWAYS"/>
                     </VBox>
                     <VBox prefWidth="350" style="-fx-background-color: #ffcccc; -fx-background-radius: 10; -fx-padding: 20;" spacing="10">
-                        <Label text="⚠️ Laporan &amp; Keluhan User" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #cc0000;"/>
+                        <Label text="Laporan &amp; Keluhan User" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #cc0000;"/>
                         <ListView fx:id="listKeluhan" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;"/>
                     </VBox>
                 </HBox>
             </VBox>
 
-            <VBox fx:id="pageDataBuku" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="false">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Kelola Data Buku" />
+            <VBox fx:id="pageDataBuku" visible="false" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10;">
+                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #00695c;" text="Manajemen Data Buku" />
                 <HBox spacing="20" VBox.vgrow="ALWAYS">
-                    <VBox spacing="10" prefWidth="350" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
-                        <TextField fx:id="titleField" promptText="Judul Buku" />
-                        <TextField fx:id="authorField" promptText="Pengarang" />
-                        <TextField fx:id="publisherField" promptText="Penerbit" />
+                    <VBox spacing="15" prefWidth="380" style="-fx-background-color: #f9f9f9; -fx-padding: 25; -fx-background-radius: 10; border: 1px solid #ddd;">
+                        <Label text="➕ Form Tambah / Edit Buku" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                        <VBox spacing="5"><Label text="Judul Buku"/><TextField fx:id="titleField" promptText="Masukkan judul" style="-fx-padding: 8;"/></VBox>
+                        <VBox spacing="5"><Label text="Pengarang"/><TextField fx:id="authorField" promptText="Nama penulis" style="-fx-padding: 8;"/></VBox>
+                        <VBox spacing="5"><Label text="Penerbit"/><TextField fx:id="publisherField" promptText="Nama penerbit" style="-fx-padding: 8;"/></VBox>
                         <HBox spacing="10">
-                            <TextField fx:id="yearField" promptText="Tahun Terbit" prefWidth="150" />
-                            <TextField fx:id="pagesField" promptText="Jml Halaman" prefWidth="150" />
+                            <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Thn Terbit"/><TextField fx:id="yearField" promptText="Cth: 2023" style="-fx-padding: 8;"/></VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS"><Label text="Jml Hlm"/><TextField fx:id="pagesField" promptText="Cth: 250" style="-fx-padding: 8;"/></VBox>
                         </HBox>
-                        <ComboBox fx:id="genreComboBox" promptText="Pilih Genre" maxWidth="Infinity" />
+                        <VBox spacing="5"><Label text="Kategori (Genre)"/><ComboBox fx:id="genreComboBox" promptText="Pilih Kategori" maxWidth="Infinity" style="-fx-padding: 4;"/></VBox>
                         <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Button text="Pilih Cover" onAction="#handleSelectImage" />
-                            <Label fx:id="imagePathLabel" text="Tidak ada" style="-fx-font-size: 10;" />
+                            <Button text="Upload Cover" onAction="#handleSelectImage" style="-fx-background-color: #e0e0e0; -fx-cursor: hand;" />
+                            <Label fx:id="imagePathLabel" text="Tidak ada file" style="-fx-font-size: 11px; -fx-text-fill: #888;" />
                         </HBox>
-                        <ImageView fx:id="previewImage" fitHeight="100" fitWidth="80" preserveRatio="true" />
-                        <Button text="SIMPAN BUKU" maxWidth="Infinity" style="-fx-background-color: #2b7a63; -fx-text-fill: white;" onAction="#handleAddBook" />
+                        <ImageView fx:id="previewImage" fitHeight="60" fitWidth="50" preserveRatio="true" />
+                        <Button text="SIMPAN" maxWidth="Infinity" style="-fx-background-color: #2b7a63; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-cursor: hand;" onAction="#handleAddBook" />
                     </VBox>
                     <TableView fx:id="bookTable" HBox.hgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="colJudul" text="Judul" prefWidth="200" />
-                            <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="150" />
-                            <TableColumn fx:id="colPenerbit" text="Penerbit" prefWidth="120" />
-                            <TableColumn fx:id="colGenre" text="Genre" prefWidth="100" />
+                            <TableColumn fx:id="colJudul" text="Judul Buku" prefWidth="250" />
+                            <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="180" />
+                            <TableColumn fx:id="colPenerbit" text="Penerbit" prefWidth="150" />
+                            <TableColumn fx:id="colGenre" text="Kategori" prefWidth="120" />
                         </columns>
                     </TableView>
                 </HBox>
             </VBox>
 
-            <VBox fx:id="pageDataAnggota" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="false">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Daftar Anggota (User)" />
+            <VBox fx:id="pageDataAnggota" visible="false" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10;">
+                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #00695c;" text="Daftar Akun Pengguna" />
                 <TableView fx:id="tableAnggota" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colAnggotaId" text="ID User" prefWidth="100" />
-                        <TableColumn fx:id="colAnggotaUsername" text="Username" prefWidth="300" />
+                        <TableColumn fx:id="colAnggotaId" text="ID User" prefWidth="150" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colAnggotaUsername" text="Username" prefWidth="400" />
                     </columns>
                 </TableView>
             </VBox>
 
-            <VBox fx:id="pagePinjaman" spacing="20.0" style="-fx-background-color: #f4f4f4; -fx-padding: 30;" visible="false">
-                <Label style="-fx-font-size: 24; -fx-font-weight: bold;" text="Data Peminjaman Buku" />
+            <VBox fx:id="pagePinjaman" visible="false" spacing="20.0" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10;">
+                <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #00695c;" text="Riwayat Transaksi Peminjaman" />
                 <TableView fx:id="tablePinjamanAdmin" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colPinjamId" text="ID Pinjam" prefWidth="80" />
-                        <TableColumn fx:id="colPinjamUser" text="Username" prefWidth="150" />
-                        <TableColumn fx:id="colPinjamBuku" text="Judul Buku" prefWidth="250" />
-                        <TableColumn fx:id="colPinjamTanggal" text="Tgl Pinjam" prefWidth="150" />
-                        <TableColumn fx:id="colPinjamStatus" text="Status" prefWidth="100" />
+                        <TableColumn fx:id="colPinjamId" text="No. Transaksi" prefWidth="120" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colPinjamUser" text="Peminjam" prefWidth="200" />
+                        <TableColumn fx:id="colPinjamBuku" text="Judul Buku" prefWidth="350" />
+                        <TableColumn fx:id="colPinjamTanggal" text="Tgl Pinjam" prefWidth="150" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colPinjamStatus" text="Status" prefWidth="150" style="-fx-alignment: CENTER; -fx-font-weight: bold;" />
                     </columns>
                 </TableView>
             </VBox>

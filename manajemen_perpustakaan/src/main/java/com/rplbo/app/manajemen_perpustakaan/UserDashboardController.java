@@ -22,12 +22,17 @@ import java.util.regex.Pattern;
 
 public class UserDashboardController {
 
-    @FXML private VBox pageKatalog, pageBookmark, pagePinjaman, pageLapor;
-    @FXML private Button btnMenuKatalog, btnMenuBookmark, btnMenuPinjaman, btnMenuLapor;
+    @FXML private VBox pageKatalog, pageFormPeminjaman, pageBookmark, pagePinjaman, pageLapor;
+    @FXML private Button btnMenuKatalog, btnMenuBookmark, btnMenuFormPinjam, btnMenuPinjaman, btnMenuLapor;
+
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterGenre;
     @FXML private Label labelHasilCari, labelJumlahBookmark;
     @FXML private TextArea txtKeluhan;
+
+    // Komponen Formulir Peminjaman Lengkap
+    @FXML private TextField txtNama, txtNik, txtNoHp, txtJudulBuku;
+    @FXML private DatePicker dpPinjam, dpKembali;
 
     @FXML private TableView<BookModel> katalogTable;
     @FXML private TableColumn<BookModel, String> colBookmark, colJudul, colPengarang, colGenre, colStatus;
@@ -41,6 +46,8 @@ public class UserDashboardController {
     private ObservableList<BookModel> pinjamanList = FXCollections.observableArrayList();
     private FilteredList<BookModel> filteredData;
 
+    private Integer selectedBookId = null;
+
     @FXML
     public void initialize() {
         filterGenre.getItems().addAll("Semua", "Fiksi", "Non-Fiksi", "Komputer", "Sains", "Sejarah", "Sastra");
@@ -50,7 +57,6 @@ public class UserDashboardController {
         loadBooks();
         loadPinjaman();
         setupSearchAndFilter();
-
         showKatalog();
     }
 
@@ -113,24 +119,43 @@ public class UserDashboardController {
     @FXML
     void handlePinjamBuku() {
         BookModel selected = katalogTable.getSelectionModel().getSelectedItem();
-        if (selected == null) { showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih buku dulu!"); return; }
-        if (!selected.getStatus().equalsIgnoreCase("Tersedia")) { showAlert(Alert.AlertType.ERROR, "Maaf", "Buku sedang dipinjam."); return; }
+        if (selected == null) { showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih buku dari katalog terlebih dahulu!"); return; }
+        if (!selected.getStatus().equalsIgnoreCase("Tersedia")) { showAlert(Alert.AlertType.ERROR, "Maaf", "Buku sedang dipinjam orang lain."); return; }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Yakin mau pinjam '" + selected.getTitle() + "'?", ButtonType.YES, ButtonType.NO);
-        confirm.showAndWait().ifPresent(resp -> {
-            if (resp == ButtonType.YES) {
-                try (Connection conn = Database.connect()) {
-                    try (PreparedStatement p1 = conn.prepareStatement("INSERT INTO loans (username, book_id, borrow_date, status) VALUES ('user', ?, CURRENT_DATE, 'Dipinjam')")) {
-                        p1.setInt(1, selected.getId()); p1.executeUpdate();
-                    }
-                    try (PreparedStatement p2 = conn.prepareStatement("UPDATE books SET status = 'Dipinjam' WHERE id = ?")) {
-                        p2.setInt(1, selected.getId()); p2.executeUpdate();
-                    }
-                    showAlert(Alert.AlertType.INFORMATION, "Sukses!", "Buku berhasil dipinjam!");
-                    loadBooks(); loadPinjaman();
-                } catch (SQLException e) { e.printStackTrace(); }
+        selectedBookId = selected.getId();
+        txtJudulBuku.setText(selected.getTitle());
+        showFormPinjam();
+    }
+
+    @FXML
+    void handleProsesPinjam() {
+        String nama = txtNama.getText().trim();
+        String nik = txtNik.getText().trim();
+        String noHp = txtNoHp.getText().trim();
+
+        if (selectedBookId == null || nama.isEmpty() || nik.isEmpty() || noHp.isEmpty() || dpPinjam.getValue() == null || dpKembali.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Peringatan", "Semua kolom form wajib diisi!");
+            return;
+        }
+
+        try (Connection conn = Database.connect()) {
+            try (PreparedStatement p1 = conn.prepareStatement("INSERT INTO loans (username, book_id, borrow_date, status) VALUES ('user', ?, CURRENT_DATE, 'Dipinjam')")) {
+                p1.setInt(1, selectedBookId); p1.executeUpdate();
             }
-        });
+            try (PreparedStatement p2 = conn.prepareStatement("UPDATE books SET status = 'Dipinjam' WHERE id = ?")) {
+                p2.setInt(1, selectedBookId); p2.executeUpdate();
+            }
+
+            showAlert(Alert.AlertType.INFORMATION, "Sukses!", "Buku berhasil dipinjam lewat formulir resmi!");
+            handleBatalPinjam();
+            loadBooks(); loadPinjaman(); showPinjaman();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    @FXML
+    void handleBatalPinjam() {
+        txtNama.clear(); txtNik.clear(); txtNoHp.clear(); txtJudulBuku.clear();
+        dpPinjam.setValue(null); dpKembali.setValue(null); selectedBookId = null;
     }
 
     @FXML
@@ -170,19 +195,26 @@ public class UserDashboardController {
 
     @FXML void handleResetFilter() { searchField.clear(); filterGenre.getSelectionModel().selectFirst(); }
     @FXML void showKatalog() { switchPage(pageKatalog, btnMenuKatalog); }
+    @FXML void showFormPinjam() { switchPage(pageFormPeminjaman, btnMenuFormPinjam); }
     @FXML void showBookmark() { switchPage(pageBookmark, btnMenuBookmark); bookmarkTable.setItems(bookmarkList); }
     @FXML void showPinjaman() { switchPage(pagePinjaman, btnMenuPinjaman); }
     @FXML void showLapor() { switchPage(pageLapor, btnMenuLapor); }
 
     private void switchPage(VBox targetPage, Button targetBtn) {
-        pageKatalog.setVisible(false); pageBookmark.setVisible(false);
-        pagePinjaman.setVisible(false); pageLapor.setVisible(false);
+        pageKatalog.setVisible(false); pageFormPeminjaman.setVisible(false);
+        pageBookmark.setVisible(false); pagePinjaman.setVisible(false); pageLapor.setVisible(false);
         targetPage.setVisible(true);
 
-        String off = "-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 10 16;";
-        btnMenuKatalog.setStyle(off); btnMenuBookmark.setStyle(off);
-        btnMenuPinjaman.setStyle(off); btnMenuLapor.setStyle("-fx-background-color: transparent; -fx-text-fill: #ffcccc; -fx-alignment: center-left; -fx-padding: 10 16;");
-        targetBtn.setStyle("-fx-background-color: #1e5646; -fx-text-fill: white; -fx-alignment: center-left; -fx-padding: 10 16;");
+        // Warna menu kalau lagi TIDAK diklik (teksnya abu-abu gelap #555)
+        String off = "-fx-background-color: transparent; -fx-text-fill: #555; -fx-alignment: center-left; -fx-padding: 12 15; -fx-font-weight: bold; -fx-cursor: hand;";
+        btnMenuKatalog.setStyle(off);
+        btnMenuBookmark.setStyle(off);
+        btnMenuFormPinjam.setStyle(off);
+        btnMenuPinjaman.setStyle(off);
+        btnMenuLapor.setStyle(off);
+
+        // Warna menu kalau LAGI DIKLIK (background tosca, teks hijau gelap)
+        targetBtn.setStyle("-fx-background-color: #e0f2f1; -fx-text-fill: #00695c; -fx-alignment: center-left; -fx-padding: 12 15; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;");
     }
 
     @FXML void handleLogout(ActionEvent event) {

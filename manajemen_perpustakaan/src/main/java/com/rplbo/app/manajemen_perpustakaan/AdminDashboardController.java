@@ -81,7 +81,7 @@ public class AdminDashboardController {
         try (Connection conn = Database.connect(); PreparedStatement p = conn.prepareStatement(sql); ResultSet rs = p.executeQuery()) {
             while (rs.next()) bookList.add(new BookModel(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getString("publisher"), rs.getString("genre"), rs.getString("status"), false));
             bookTable.setItems(bookList);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException p) { p.printStackTrace(); }
     }
 
     private void loadAnggota() {
@@ -123,14 +123,17 @@ public class AdminDashboardController {
         totalAnggotaLabel.setText(String.valueOf(count("SELECT COUNT(*) FROM users WHERE role = 'user'")));
         totalPinjamLabel.setText(String.valueOf(count("SELECT COUNT(*) FROM loans WHERE status = 'Dipinjam'")));
 
-        // Load PieChart Data
+        int jmlTersedia = count("SELECT COUNT(*) FROM books WHERE status = 'Tersedia'");
+        int jmlDipinjam = count("SELECT COUNT(*) FROM books WHERE status = 'Dipinjam'");
+        int jmlKeluhan = count("SELECT COUNT(*) FROM complaints");
+
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("Tersedia", count("SELECT COUNT(*) FROM books WHERE status = 'Tersedia'")),
-                new PieChart.Data("Dipinjam", count("SELECT COUNT(*) FROM books WHERE status = 'Dipinjam'"))
+                new PieChart.Data("Tersedia (" + jmlTersedia + ")", jmlTersedia),
+                new PieChart.Data("Dipinjam (" + jmlDipinjam + ")", jmlDipinjam),
+                new PieChart.Data("Keluhan (" + jmlKeluhan + ")", jmlKeluhan)
         );
         chartBuku.setData(pieData);
 
-        // Load Laporan Keluhan
         ObservableList<String> keluhanList = FXCollections.observableArrayList();
         try (Connection conn = Database.connect(); PreparedStatement p = conn.prepareStatement("SELECT username, message, tanggal FROM complaints ORDER BY id DESC"); ResultSet rs = p.executeQuery()) {
             while (rs.next()) keluhanList.add("[" + rs.getString("tanggal") + "] " + rs.getString("username") + ":\n" + rs.getString("message"));
@@ -198,16 +201,6 @@ public class AdminDashboardController {
                 if (!selectedImagePath.isEmpty()) previewImage.setImage(new Image(selectedImagePath));
             }
         } catch (SQLException e) { e.printStackTrace(); }
-    }
-
-    @FXML void bukaFormPeminjaman(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Peminjaman_view.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Form Peminjaman Manual / Offline");
-            stage.setScene(new Scene(loader.load(), 1080, 720));
-            stage.show();
-        } catch (Exception e) { e.printStackTrace(); }
     }
 
     @FXML void handleLogout(ActionEvent event) {
