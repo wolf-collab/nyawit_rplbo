@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="720.0" prefWidth="1200.0" style="-fx-background-color: #f4f7f6;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.UserDashboardPublicController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" style="-fx-background-color: #4DB6AC; -fx-padding: 0 30;">
+            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <Label text="PERPUSTAKAAN FURAB" textFill="WHITE">
+                    <font><Font name="System Bold" size="22.0" /></font>
+                </Label>
+                <Label text="Kota Yogyakarta" textFill="WHITE">
+                    <font><Font size="14.0" /></font>
+                </Label>
+            </VBox>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox prefWidth="220.0" spacing="5.0" style="-fx-background-color: white; -fx-padding: 20 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 2, 0);">
+            <Button fx:id="btnMenuKatalog" text="📚  Katalog Buku" onAction="#showKatalog" maxWidth="Infinity" style="-fx-background-color: #e0f2f1; -fx-text-fill: #00695c; -fx-alignment: center-left; -fx-padding: 12 15; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
+            <Region VBox.vgrow="ALWAYS" />
+            <Button text="Login" onAction="#handleLogin" maxWidth="Infinity" style="-fx-background-color: #ff5252; -fx-text-fill: white; -fx-alignment: center; -fx-padding: 12; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane style="-fx-padding: 20;">
+            <VBox fx:id="pageKatalog" visible="true" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Label text="Katalog Buku Tersedia" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
+                <Label fx:id="labelHasilCari" text="Memuat koleksi..." style="-fx-text-fill: #888;" />
+                <TableView fx:id="katalogTable" VBox.vgrow="ALWAYS" style="-fx-selection-bar: #b2dfdb;">
+                    <columns>
+                        <TableColumn fx:id="colJudul" text="Judul Buku" prefWidth="260" />
+                        <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="160" />
+                        <TableColumn fx:id="colGenre" text="Kategori" prefWidth="120" />
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="100" style="-fx-alignment: CENTER;" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </StackPane>
+    </center>
+
+    <right>
+        <VBox prefWidth="260.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 20 15;">
+            <VBox spacing="10">
+                <HBox style="-fx-background-color: #f0f0f0; -fx-background-radius: 20; -fx-padding: 5 10; border: 1px solid #ddd;">
+                    <Label text="🔍" style="-fx-font-size: 16; -fx-padding: 5 5 0 0;" />
+                    <TextField fx:id="searchField" promptText="Cari judul..." style="-fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS" />
+                </HBox>
+                <ComboBox fx:id="filterGenre" promptText="Kategori" maxWidth="Infinity" style="-fx-background-color: #f0f0f0; -fx-background-radius: 20;" />
+                <Button text="Reset Filter" onAction="#handleResetFilter" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 11px; -fx-cursor: hand; -fx-underline: true;" />
+            </VBox>
+        </VBox>
+    </right>
+
+</BorderPane>
