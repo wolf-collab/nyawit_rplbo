@@ -6,13 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="84f0bd93-ddb3-443e-aef6-e07bdfc52db9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/AdminDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/BookModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/BookModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/UserDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/java/com/rplbo/app/manajemen_perpustakaan/UserDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/resources/com/rplbo/app/manajemen_perpustakaan/admin-dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/resources/com/rplbo/app/manajemen_perpustakaan/admin-dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/resources/com/rplbo/app/manajemen_perpustakaan/user-dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/manajemen_perpustakaan/src/main/resources/com/rplbo/app/manajemen_perpustakaan/user-dashboard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="40" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -24,6 +29,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/wolf-collab/nyawit_rplbo.git",
+    "accountId": "75d5a3c8-85d6-40b7-9963-b290492615b1"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -53,8 +64,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "pencarian",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/jerry/UG progweb/nyawit_rplbo",
@@ -63,7 +76,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "MavenSettings",
@@ -90,6 +103,8 @@
       <workItem from="1779711960987" duration="2826000" />
       <workItem from="1779802440921" duration="377000" />
       <workItem from="1779802881585" duration="16000" />
+      <workItem from="1780153339218" duration="89000" />
+      <workItem from="1780153439060" duration="548000" />
     </task>
     <servers />
   </component>

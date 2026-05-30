@@ -10,22 +10,34 @@
 <BorderPane prefHeight="720.0" prefWidth="1200.0" style="-fx-background-color: #f4f7f6;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rplbo.app.manajemen_perpustakaan.UserDashboardController">
 
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="70.0" style="-fx-background-color: #4DB6AC; -fx-padding: 0 30;">
-            <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                <Label text="PERPUSTAKAAN FURAB" textFill="WHITE">
-                    <font><Font name="System Bold" size="22.0" /></font>
-                </Label>
-                <Label text="Kota Yogyakarta" textFill="WHITE">
-                    <font><Font size="14.0" /></font>
-                </Label>
-            </VBox>
-            <HBox alignment="CENTER_RIGHT" spacing="25.0">
-                <Button text="HOME" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
-                <Button text="BUKU" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
-                <Button text="TENTANG KAMI" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
-                <Button text="BANTUAN" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+        <VBox>
+            <!-- Navbar -->
+            <HBox alignment="CENTER_LEFT" prefHeight="70.0" style="-fx-background-color: #4DB6AC; -fx-padding: 0 30;">
+                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <Label text="PERPUSTAKAAN FURAB" textFill="WHITE">
+                        <font><Font name="System Bold" size="22.0" /></font>
+                    </Label>
+                    <Label text="Kota Yogyakarta" textFill="WHITE">
+                        <font><Font size="14.0" /></font>
+                    </Label>
+                </VBox>
+                <HBox alignment="CENTER_RIGHT" spacing="25.0">
+                    <Button text="HOME" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+                    <Button text="BUKU" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+                    <Button text="TENTANG KAMI" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+                    <Button text="BANTUAN" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+                </HBox>
             </HBox>
-        </HBox>
+            <!-- Search Bar di tengah atas -->
+            <HBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-padding: 12 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 6, 0, 0, 3);">
+                <HBox alignment="CENTER_LEFT" prefWidth="500" style="-fx-background-color: #f0f0f0; -fx-background-radius: 25; -fx-padding: 5 15; -fx-border-color: #d0d0d0; -fx-border-radius: 25;">
+                    <Label text="🔍" style="-fx-font-size: 16; -fx-padding: 0 8 0 0;" />
+                    <TextField fx:id="searchField" promptText="Cari judul buku..." style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 14px;" HBox.hgrow="ALWAYS" />
+                </HBox>
+                <ComboBox fx:id="filterGenre" promptText="Semua Kategori" prefWidth="180" style="-fx-background-radius: 25; -fx-padding: 4 10;" />
+                <Button text="Reset Filter" onAction="#handleResetFilter" style="-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 12px; -fx-cursor: hand; -fx-underline: true;" />
+            </HBox>
+        </VBox>
     </top>
 
     <left>
@@ -44,61 +56,100 @@
     <center>
         <StackPane style="-fx-padding: 20;">
 
+            <!-- PAGE KATALOG -->
             <VBox fx:id="pageKatalog" visible="true" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                 <HBox alignment="CENTER_LEFT" spacing="15">
                     <Label text="Katalog Buku Tersedia" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" />
                     <Region HBox.hgrow="ALWAYS" />
-                    <Button text="📖 Masuk Form Pinjam" onAction="#handlePinjamBuku" style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 20; -fx-cursor: hand;" />
+                    <Button text="📖 Pinjam Buku Ini" onAction="#handlePinjamBuku" style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 20; -fx-cursor: hand;" />
                     <Button text="★ Toggle Favorit" onAction="#handleToggleBookmark" style="-fx-background-color: #fbc02d; -fx-text-fill: #333; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 20; -fx-cursor: hand;" />
                 </HBox>
                 <Label fx:id="labelHasilCari" text="Memuat koleksi..." style="-fx-text-fill: #888;" />
                 <TableView fx:id="katalogTable" VBox.vgrow="ALWAYS" style="-fx-selection-bar: #b2dfdb;">
                     <columns>
                         <TableColumn fx:id="colBookmark" text="★" prefWidth="40" style="-fx-alignment: CENTER;" />
-                        <TableColumn fx:id="colJudul" text="Judul Buku" prefWidth="260" />
-                        <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="160" />
-                        <TableColumn fx:id="colGenre" text="Kategori" prefWidth="120" />
+                        <TableColumn fx:id="colIdBuku" text="ID Buku" prefWidth="70" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colCover" text="Cover" prefWidth="70" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colJudul" text="Judul Buku" prefWidth="230" />
+                        <TableColumn fx:id="colPengarang" text="Pengarang" prefWidth="140" />
+                        <TableColumn fx:id="colGenre" text="Kategori" prefWidth="110" />
                         <TableColumn fx:id="colStatus" text="Status" prefWidth="100" style="-fx-alignment: CENTER;" />
                     </columns>
                 </TableView>
             </VBox>
 
-            <VBox fx:id="pageFormPeminjaman" visible="false" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-                <Label text="📝 Formulir Peminjaman" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #00897b;" />
-                <Label text="Lengkapi data diri sesuai KTP untuk meminjam buku secara resmi." style="-fx-text-fill: #666;" />
+            <!-- PAGE FORM PEMINJAMAN -->
+            <VBox fx:id="pageFormPeminjaman" visible="false" spacing="0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                <!-- Header form -->
+                <VBox style="-fx-background-color: #00897b; -fx-padding: 20 25; -fx-background-radius: 10 10 0 0;">
+                    <Label text="📝 Formulir Peminjaman Buku" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label text="Isi data diri Anda dengan benar untuk memproses peminjaman." style="-fx-text-fill: #ccefec; -fx-font-size: 13px;" />
+                </VBox>
 
-                <GridPane hgap="20.0" vgap="15.0" style="-fx-background-color: #f9f9f9; -fx-padding: 20; -fx-background-radius: 10; border: 1px solid #eee;">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                <!-- Konten form -->
+                <VBox spacing="20" style="-fx-padding: 25;">
+                    <!-- Info buku terpilih -->
+                    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #e8f5e9; -fx-padding: 12 18; -fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8;">
+                        <Label text="📗" style="-fx-font-size: 22;" />
+                        <VBox spacing="2">
+                            <Label text="Buku Dipilih:" style="-fx-font-size: 11px; -fx-text-fill: #666;" />
+                            <TextField fx:id="txtJudulBuku" promptText="(Pilih buku dari katalog terlebih dahulu)" editable="false" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2e7d32;" />
+                        </VBox>
+                    </HBox>
 
-                    <VBox spacing="5.0"><Label text="Nama Lengkap *" style="-fx-font-weight: bold;"/><TextField fx:id="txtNama" promptText="Masukkan nama lengkap" style="-fx-background-radius: 5; -fx-padding: 8;"/></VBox>
-                    <VBox spacing="5.0" GridPane.columnIndex="1"><Label text="No. Identitas / NIK *" style="-fx-font-weight: bold;"/><TextField fx:id="txtNik" promptText="Tanpa tanda titik/spasi" style="-fx-background-radius: 5; -fx-padding: 8;"/></VBox>
-                    <VBox spacing="5.0" GridPane.rowIndex="1"><Label text="No. HP *" style="-fx-font-weight: bold;"/><TextField fx:id="txtNoHp" promptText="Nomor handphone aktif" style="-fx-background-radius: 5; -fx-padding: 8;"/></VBox>
-                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1"><Label text="Judul Buku *" style="-fx-font-weight: bold;"/><TextField fx:id="txtJudulBuku" promptText="Pilih dari katalog" editable="false" style="-fx-background-color: #e0e0e0; -fx-background-radius: 5; -fx-padding: 8;"/></VBox>
-                    <VBox spacing="5.0" GridPane.rowIndex="2"><Label text="Tanggal Pinjam *" style="-fx-font-weight: bold;"/><DatePicker fx:id="dpPinjam" prefWidth="1000" style="-fx-background-radius: 5;"/></VBox>
-                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2"><Label text="Tanggal Kembali *" style="-fx-font-weight: bold;"/><DatePicker fx:id="dpKembali" prefWidth="1000" style="-fx-background-radius: 5;"/></VBox>
-                </GridPane>
+                    <GridPane hgap="20.0" vgap="15.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
 
-                <HBox spacing="15.0" alignment="CENTER_LEFT">
-                    <Button onAction="#handleProsesPinjam" text="PROSES PINJAMAN" style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 5; -fx-cursor: hand;" />
-                    <Button onAction="#handleBatalPinjam" text="RESET FORM" style="-fx-background-color: #e0e0e0; -fx-text-fill: #333; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 5; -fx-cursor: hand;" />
-                </HBox>
+                        <!-- Nama Lengkap -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="👤 Nama Lengkap *" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <TextField fx:id="txtNama" promptText="Masukkan nama lengkap sesuai KTP" style="-fx-background-radius: 8; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-font-size: 13px;" />
+                        </VBox>
+
+                        <!-- NIK -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="🪪 No. Identitas / NIK *" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <TextField fx:id="txtNik" promptText="16 digit NIK tanpa spasi" style="-fx-background-radius: 8; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-font-size: 13px;" />
+                        </VBox>
+
+                        <!-- No HP -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="📱 No. Handphone *" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <TextField fx:id="txtNoHp" promptText="Nomor HP aktif (contoh: 0812xxxxx)" style="-fx-background-radius: 8; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-font-size: 13px;" />
+                        </VBox>
+
+                        <!-- Tanggal Pinjam -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="📅 Tanggal Pinjam *" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <DatePicker fx:id="dpPinjam" prefWidth="10000" style="-fx-background-radius: 8;" />
+                        </VBox>
+
+                        <!-- Tanggal Kembali -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="📅 Tanggal Kembali *" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
+                            <DatePicker fx:id="dpKembali" prefWidth="10000" style="-fx-background-radius: 8;" />
+                        </VBox>
+                    </GridPane>
+
+                    <HBox spacing="15.0" alignment="CENTER_LEFT">
+                        <Button onAction="#handleProsesPinjam" text="✅  PROSES PINJAMAN" style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 28; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 14px;" />
+                        <Button onAction="#handleBatalPinjam" text="🔄  RESET FORM" style="-fx-background-color: #eceff1; -fx-text-fill: #555; -fx-font-weight: bold; -fx-padding: 12 28; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 14px;" />
+                    </HBox>
+                </VBox>
             </VBox>
 
+            <!-- PAGE BOOKMARK -->
             <VBox fx:id="pageBookmark" visible="false" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                 <Label text="★ Buku Favorit Saya" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f57f17;" />
                 <Label fx:id="labelJumlahBookmark" text="0 buku dalam favorit" style="-fx-text-fill: #666;" />
                 <TableView fx:id="bookmarkTable" VBox.vgrow="ALWAYS" style="-fx-selection-bar: #fff9c4;">
                     <columns>
-                        <TableColumn fx:id="colBmJudul" text="Judul Buku" prefWidth="300" />
-                        <TableColumn fx:id="colBmPengarang" text="Pengarang" prefWidth="200" />
+                        <TableColumn fx:id="colBmIdBuku" text="ID Buku" prefWidth="70" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colBmJudul" text="Judul Buku" prefWidth="260" />
+                        <TableColumn fx:id="colBmPengarang" text="Pengarang" prefWidth="180" />
                         <TableColumn fx:id="colBmGenre" text="Kategori" prefWidth="120" />
                         <TableColumn fx:id="colBmStatus" text="Status" prefWidth="100" style="-fx-alignment: CENTER;" />
                     </columns>
@@ -106,17 +157,21 @@
                 <Button text="🗑 Hapus dari Favorit" onAction="#handleHapusBookmark" style="-fx-background-color: #ffebee; -fx-text-fill: #c0392b; -fx-font-weight: bold; -fx-border-color: #c0392b; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8 16; -fx-cursor: hand;" />
             </VBox>
 
+            <!-- PAGE PINJAMAN SAYA -->
             <VBox fx:id="pagePinjaman" visible="false" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                 <Label text="📋 Riwayat Peminjaman" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" />
                 <TableView fx:id="pinjamanTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colPjJudul" text="Judul Buku" prefWidth="350" />
-                        <TableColumn fx:id="colPjPengarang" text="Pengarang" prefWidth="220" />
-                        <TableColumn fx:id="colPjStatus" text="Status" prefWidth="150" style="-fx-alignment: CENTER; -fx-font-weight: bold;" />
+                        <TableColumn fx:id="colPjIdPinjam" text="ID Pinjaman" prefWidth="100" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colPjIdBuku" text="ID Buku" prefWidth="80" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="colPjJudul" text="Judul Buku" prefWidth="300" />
+                        <TableColumn fx:id="colPjPengarang" text="Pengarang" prefWidth="180" />
+                        <TableColumn fx:id="colPjStatus" text="Status" prefWidth="130" style="-fx-alignment: CENTER; -fx-font-weight: bold;" />
                     </columns>
                 </TableView>
             </VBox>
 
+            <!-- PAGE PENGADUAN -->
             <VBox fx:id="pageLapor" visible="false" spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);">
                 <Label text="Layanan Pengaduan" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #c0392b;" />
                 <Label text="Ada buku yang rusak atau pelayanan yang kurang memuaskan? Beritahu kami." style="-fx-text-fill: #666;" />
@@ -127,60 +182,18 @@
         </StackPane>
     </center>
 
-    <right>
-        <VBox prefWidth="260.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 20 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, -2, 0);">
-
-            <VBox spacing="10">
-                <HBox style="-fx-background-color: #f0f0f0; -fx-background-radius: 20; -fx-padding: 5 10; border: 1px solid #ddd;">
-                    <Label text="🔍" style="-fx-font-size: 16; -fx-padding: 5 5 0 0;" />
-                    <TextField fx:id="searchField" promptText="Cari judul..." style="-fx-background-color: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS" />
-                </HBox>
-                <ComboBox fx:id="filterGenre" promptText="Kategori" maxWidth="Infinity" style="-fx-background-color: #f0f0f0; -fx-background-radius: 20;" />
-                <Button text="Reset Filter" onAction="#handleResetFilter" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: #888; -fx-font-size: 11px; -fx-cursor: hand; -fx-underline: true;" />
-            </VBox>
-
-            <Separator />
-
-            <HBox alignment="CENTER" spacing="25">
-                <Label text="★" style="-fx-font-size: 24; -fx-text-fill: #333; -fx-cursor: hand;" />
-                <Label text="⏱" style="-fx-font-size: 24; -fx-text-fill: #333; -fx-cursor: hand;" />
-                <Label text="🏷" style="-fx-font-size: 24; -fx-text-fill: #333; -fx-cursor: hand;" />
-            </HBox>
-
-            <Separator />
-
-            <VBox spacing="10" style="-fx-background-color: #4DB6AC; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="Rekomendasi Buku" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
-                <VBox alignment="CENTER" spacing="8" style="-fx-background-color: #e0f2f1; -fx-padding: 15 10; -fx-background-radius: 8;">
-                    <AnchorPane prefHeight="120" prefWidth="90" style="-fx-background-color: #ccc;">
-                        <Label text="COVER" layoutX="25" layoutY="50" style="-fx-text-fill: #888; -fx-font-weight: bold;"/>
-                    </AnchorPane>
-                    <Label text="Masakan Nusantara" style="-fx-font-weight: bold; -fx-text-fill: #00695c; -fx-alignment: center;" textAlignment="CENTER" wrapText="true" />
-                    <Label text="Penulis: Budi" style="-fx-font-size: 11px; -fx-text-fill: #555;" />
-                </VBox>
-            </VBox>
-
-            <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #00695C; -fx-padding: 15; -fx-background-radius: 10;">
-                <Label text="Counter" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
-                <Label text="Anda Pengunjung Ke-20" textFill="WHITE" style="-fx-font-size: 12px;" />
-            </VBox>
-        </VBox>
-    </right>
-
     <bottom>
         <HBox alignment="CENTER" prefHeight="100.0" spacing="40" style="-fx-background-color: #00796B; -fx-padding: 20 40;">
             <VBox prefWidth="300.0" spacing="5.0">
                 <Label text="TENTANG KAMI" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                 <Label text="Perpustakaan Furab adalah platform digital yang memudahkan masyarakat untuk mengakses buku secara efisien dan transparan." textFill="WHITE" wrapText="true" style="-fx-font-size: 12px; -fx-opacity: 0.8;" />
             </VBox>
-
             <VBox prefWidth="300.0" spacing="5.0">
                 <Label text="KONTAK KAMI" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                 <Label text="📍 Jl. Kenari No. 56, Muja Muju, Yogyakarta" textFill="WHITE" style="-fx-font-size: 12px; -fx-opacity: 0.8;" />
                 <Label text="📞 (0274) 514448" textFill="WHITE" style="-fx-font-size: 12px; -fx-opacity: 0.8;" />
                 <Label text="✉️ perpustakaan@gmail.com" textFill="WHITE" style="-fx-font-size: 12px; -fx-opacity: 0.8;" />
             </VBox>
-
             <VBox alignment="CENTER_LEFT" prefWidth="250.0" spacing="5.0">
                 <Label text="MAPS" textFill="WHITE" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                 <AnchorPane prefHeight="50.0" prefWidth="180.0" style="-fx-background-color: #b2dfdb; -fx-background-radius: 5;">

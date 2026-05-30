@@ -11,8 +11,10 @@ public class BookModel {
     private final SimpleStringProperty genre;
     private final SimpleStringProperty status;
     private final SimpleStringProperty bookmarked;
+    private String imagePath;
+    private int loanId;
 
-    public BookModel(int id, String title, String author, String publisher, String genre, String status, boolean isBookmarked) {
+    public BookModel(int id, String title, String author, String publisher, String genre, String status, boolean isBookmarked, String imagePath) {
         this.id         = new SimpleIntegerProperty(id);
         this.title      = new SimpleStringProperty(title);
         this.author     = new SimpleStringProperty(author);
@@ -20,6 +22,13 @@ public class BookModel {
         this.genre      = new SimpleStringProperty(genre != null ? genre : "-");
         this.status     = new SimpleStringProperty(status != null ? status : "Tersedia");
         this.bookmarked = new SimpleStringProperty(isBookmarked ? "★" : "☆");
+        this.imagePath  = imagePath != null ? imagePath : "";
+        this.loanId     = 0;
+    }
+
+    // Legacy constructor (backward compatibility)
+    public BookModel(int id, String title, String author, String publisher, String genre, String status, boolean isBookmarked) {
+        this(id, title, author, publisher, genre, status, isBookmarked, null);
     }
 
     public int getId()              { return id.get(); }
@@ -29,6 +38,8 @@ public class BookModel {
     public String getGenre()        { return genre.get(); }
     public String getStatus()       { return status.get(); }
     public String getBookmarked()   { return bookmarked.get(); }
+    public String getImagePath()    { return imagePath; }
+    public int getLoanId()          { return loanId; }
 
     public SimpleIntegerProperty idProperty()       { return id; }
     public SimpleStringProperty titleProperty()     { return title; }
@@ -38,7 +49,7 @@ public class BookModel {
     public SimpleStringProperty statusProperty()    { return status; }
     public SimpleStringProperty bookmarkedProperty(){ return bookmarked; }
 
-    public void setBookmarked(boolean isBookmarked) {
-        this.bookmarked.set(isBookmarked ? "★" : "☆");
-    }
+    public void setBookmarked(boolean isBookmarked) { this.bookmarked.set(isBookmarked ? "★" : "☆"); }
+    public void setImagePath(String imagePath)      { this.imagePath = imagePath != null ? imagePath : ""; }
+    public void setLoanId(int loanId)               { this.loanId = loanId; }
 }
